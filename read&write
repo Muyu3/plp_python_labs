@@ -1,0 +1,82 @@
+import os
+
+def process_and_write_file():
+    """
+    Asks for a filename, reads it with error handling, modifies the content, 
+    and writes the modified content to a new file.
+    """
+    
+    # 1. Ask the user for the input filename
+    input_filename = input("Enter the name of the file to read (e.g., input.txt): ")
+    
+    # Define the output filename
+    output_filename = "output_modified.txt"
+    
+    file_content = ""
+    
+    # 2. Error Handling Lab 🧪: Attempt to read the file
+    try:
+        # Use 'with open' for robust file handling (ensures file is closed)
+        with open(input_filename, 'r', encoding='utf-8') as file:
+            file_content = file.read()
+            print(f"\n✅ Successfully read content from '{input_filename}'.")
+            
+    except FileNotFoundError:
+        print(f"\n❌ Error: The file '{input_filename}' was not found. Please check the name and path.")
+        return # Exit the function if the file isn't found
+        
+    except IOError:
+        print(f"\n❌ Error: Could not read the file '{input_filename}'. Check permissions.")
+        return # Exit the function for other I/O errors
+        
+    except Exception as e:
+        print(f"\n❌ An unexpected error occurred: {e}")
+        return
+        
+    # --- Only proceed if the file was successfully read ---
+    
+    # 3. File Read & Write Challenge 🖋️: Modify the content
+    if file_content:
+        
+        # Modification: Convert to uppercase and add a header/footer
+        modified_content = (
+            "================= MODIFIED CONTENT START =================\n"
+            + file_content.upper() 
+            + "\n================== MODIFIED CONTENT END =================="
+        )
+
+        # 4. Write the modified content to a new file
+        try:
+            with open(output_filename, 'w', encoding='utf-8') as outfile:
+                outfile.write(modified_content)
+            
+            print(f"\n✅ Successfully wrote the modified content to '{output_filename}'.")
+            
+        except IOError:
+            print(f"\n❌ Error: Could not write to the output file '{output_filename}'. Check permissions.")
+        
+        except Exception as e:
+            print(f"\n❌ An unexpected error occurred during writing: {e}")
+            
+    # 5. Final confirmation step
+        finally:
+        # This code runs no matter what, even if an exception occurred earlier
+            print("\n🎉 File processing attempt completed.")
+
+
+# To make the program runnable, we call the function
+if __name__ == "__main__":
+    
+    # --- Pre-Challenge Setup: Create a dummy input file if it doesn't exist ---
+    # This step ensures the successful path can be tested immediately.
+    dummy_file_name = "input_test.txt"
+    if not os.path.exists(dummy_file_name):
+        try:
+            with open(dummy_file_name, 'w', encoding='utf-8') as f:
+                f.write("This is a test line.\nAnother line of text.\n123 numbers.")
+            print(f"**A dummy file named '{dummy_file_name}' was created for easy testing.**\n")
+        except Exception:
+            pass # Ignore errors if we can't create the dummy file
+    # --------------------------------------------------------------------------
+    
+    process_and_write_file()
